@@ -1,5 +1,5 @@
   
-var host = require('ctl').ctl({ secret: 5 });
+var host = require('ctl').init();
 
 
 exports.route = function (server) {

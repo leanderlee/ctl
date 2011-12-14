@@ -134,7 +134,7 @@ var Host = function (makeRequest) {
 };
 
 
-exports.ctl = function (options, mr) {
+exports.init = function (options, mr) {
   options = options || {};
 
   mr = mr || function () {
