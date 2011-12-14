@@ -1,5 +1,6 @@
   
-var host = require('ctl').init();
+var defaults = { secret: 5 };
+var host = require('ctl').init(defaults);
 
 
 exports.route = function (server) {
@@ -20,6 +21,18 @@ exports.route = function (server) {
       page.write("Posting some secret informations?");
     },
   });
+
+
+  // Rendering templates
+  host.bind("/template", function (page) {
+    if (page.param("show") == "yes") {
+      // Secret is now 6, not 5
+      page.render("template.html", { secret: 6 });
+    } else {
+      // Secret is defaulted to 5.
+      page.render("template.html");
+    }
+  })
 
 
   // Bind everything. Serve the page!
