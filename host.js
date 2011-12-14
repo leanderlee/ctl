@@ -123,6 +123,7 @@ var Host = function (makeRequest) {
 };
 
 
+exports.Request = Request;
 exports.init = function (options, mr) {
   options = options || {};
 
