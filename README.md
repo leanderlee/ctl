@@ -2,7 +2,7 @@
 
 NodeCTL is an easy way to manage all those routes and ugly handlers in ExpressJS or some other library.
 
-### How it works ###
+## How it works ##
 
 In the most basic usage, it would be something like this:
 
