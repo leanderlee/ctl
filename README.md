@@ -24,7 +24,7 @@ controller.js
 	}
 
 
-### Installation ###
+## Installation ##
 
 `npm install ctl`
 
