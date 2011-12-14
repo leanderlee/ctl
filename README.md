@@ -15,7 +15,7 @@ server.js
 
 controller.js
 
-	var host = require('ctl').ctl();
+	var host = require('ctl').init();
 	exports.route = function (server) {
 		host.bind("/", function (page) {
 			page.write("hello, world!");
