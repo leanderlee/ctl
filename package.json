@@ -1,5 +1,5 @@
-{ "name": "node-ctl"
-, "version": "0.1.0"
+{ "name": "ctl"
+, "version": "0.1.1"
 , "author": "Leander Lee"
 , "description": "Controller module for NodeJS. Made to be extremely hackable and light!"
 , "homepage": "http://github.com/leanderlee/node-ctl"
