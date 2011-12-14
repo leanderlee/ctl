@@ -14,17 +14,6 @@ var Request = function (kwargs) {
 
 
   // Public methods
-  self.protect = function () {
-    if (req.session.authenticated) {
-      if (typeof(page) == 'function') {
-        page.call(null);
-      } else {
-        this.render(res, page, params);
-      }
-    } else {
-      this.render(res, defaults.login);
-    }
-  }
   self.headers = function () {
     return req.headers;
   }
