@@ -7,6 +7,7 @@ var Request = function (kwargs) {
   // Private properties
   var res = kwargs.res;
   var req = kwargs.req;
+  var next = kwargs.next;
 
 
   // Public properties
@@ -26,6 +27,9 @@ var Request = function (kwargs) {
   self.get = function (name) {
     return req.session && req.session[name];
   }
+  self.next = function () {
+    process.nextTick(next || function(){});
+  }
   self.param = function (name, def) {
     return req.param(name, def || '');
   }
@@ -34,7 +38,7 @@ var Request = function (kwargs) {
     res.end();
   }
   self.json = function (obj) {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(obj));
   }
   self.write = function (str) {
@@ -131,6 +135,7 @@ exports.init = function (options, mr) {
     var kwargs = {
       req: arguments[0] || null,
       res: arguments[1] || null,
+      next: arguments[2] || null,
       defaults: options,
     };
     return Request(kwargs);

@@ -10,6 +10,10 @@ server.js
 	
 	var express = require('express');
 	var app = express.createServer();
+	app.use(express.bodyParser());
+	app.use(express.cookieParser('keyboard cat'));
+	app.use(express.session({ cookie: { maxAge: 60000 }}));
+	app.use(flash());
 	require('./controller.js').route(app);
 	app.listen(80);
 
@@ -42,6 +46,8 @@ The details of the standard `Request` object is listed below for your use and re
 **defaults** - Is a property holding the object you passed in with `init()`.
 
 **headers()** - Returns all of the headers from the client's request.
+
+**next()** - Goes to the next handler (see express documentation)
 
 **accepts(mimetype)** - Checks to see if `mimetype` is in the `accept` part of the header.
 
