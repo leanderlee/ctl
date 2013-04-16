@@ -4,13 +4,9 @@ var Request = function (kwargs) {
   kwargs = kwargs || {};
   
 
-  // Private properties
-  var res = kwargs.res;
-  var req = kwargs.req;
-  var next = kwargs.next;
-
-
-  // Public properties
+  self.res = kwargs.res;
+  self.req = kwargs.req;
+  self.next = kwargs.next;
   self.defaults = kwargs.defaults || {};
 
 
