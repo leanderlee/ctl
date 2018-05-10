@@ -4,5 +4,12 @@
   "homepage": "http://github.com/leanderlee/ctl",
   "main": "host",
   "name": "ctl",
-  "version": "0.1.6"
+  "version": "0.1.6",
+  "dependencies": {
+    "app-module-path": "^2.2.0",
+    "better-logs": "^3.0.3",
+    "callsite": "^1.0.0",
+    "fs-extra": "^6.0.1",
+    "lodash.merge": "^4.6.1"
+  }
 }
