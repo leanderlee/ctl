@@ -1,7 +1,15 @@
-{ "name": "ctl"
-, "version": "0.1.6"
-, "author": "Leander Lee"
-, "description": "Controller module for NodeJS. Made to be extremely hackable and light!"
-, "homepage": "http://github.com/leanderlee/node-ctl"
-, "main": "host"
+{
+  "author": "Leander Lee",
+  "description": "Controller module for NodeJS. Made to be extremely hackable and light!",
+  "homepage": "http://github.com/leanderlee/ctl",
+  "main": "host",
+  "name": "ctl",
+  "version": "1.0.0",
+  "dependencies": {
+    "app-module-path": "^2.2.0",
+    "better-logs": "^3.0.3",
+    "callsite": "^1.0.0",
+    "fs-extra": "^6.0.1",
+    "lodash.merge": "^4.6.1"
+  }
 }
