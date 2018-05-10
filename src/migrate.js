@@ -65,7 +65,7 @@ module.exports = async function (log, metainfo, models, disableTests) {
 
   // Procedure
   state = await load();
-  if (!state.updated) {
+  if (!state || !state.updated) {
     state = {
       updated: new Date().toISOString(),
       versions: {},
