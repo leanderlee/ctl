@@ -83,12 +83,11 @@ function CTL(opts = {}) {
   merge(settings, opts, { init: true });
   paths.addPath(`${__dirname}/src`);
   paths.addPath(settings.src);
-  if (module.parent) {
-    const pkg = require(`${opts.root}/package.json`);
-    Object.keys(pkg.dependencies)
-      .filter(lib => lib.startsWith('ctl-'))
-      .forEach(lib => module.parent.require(lib));
-  }
+  if (!module.parent) throw new Error('ctl must be used as a library.');
+  const pkg = require(`${opts.root}/package.json`);
+  Object.keys(pkg.dependencies)
+    .filter(lib => lib.startsWith('ctl-'))
+    .forEach(lib => module.parent.require(lib));
   init();
 }
 
@@ -105,6 +104,7 @@ CTL.metainfo = (obj) => {
   return metainfo;
 };
 CTL.dirname = dirname;
+CTL.library = (name) => require(`library/${name}`);
 CTL.settings = (defaults = {}) => merge(defaults, settings);
 
 module.exports = CTL;
