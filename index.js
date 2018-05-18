@@ -9,6 +9,8 @@ const migrate = require('./src/migrate');
 
 let service;
 let metainfo;
+const connects = [];
+const models = {};
 const settings = {
   init: false,
   debug: false,
@@ -19,9 +21,8 @@ const settings = {
   lifecycle: 'lifecycle',
 };
 
-async function loader() {
+async function loadModelsDir() {
   const folders = (Array.isArray(settings.models) ? settings.models : [settings.models]);
-  const models = {};
   for (let i = 0; i < folders.length; i += 1) {
     const folder = utils.addSlash(folders[i], '');
     const dir = `${settings.src}${folder}`;
@@ -41,7 +42,6 @@ async function loader() {
       models[name] = model;
     }
   }
-  return models;
 }
 
 async function init() {
@@ -50,10 +50,13 @@ async function init() {
     if (!service) throw new Error('Service is not defined, please install ctl-express or some other service.');
     const lifecycle = require(`library/${settings.lifecycle}`, true) || {};
     const debug = !!settings.debug;
-    const models = await loader();
+    await loadModelsDir();
     const context = service.create();
     if (lifecycle.loadModels) {
       merge(models, await lifecycle.loadModels(context) || {});
+    }
+    for (let i = 0; i < connects.length; i += 1) {
+      await connects[i]();
     }
     if (lifecycle.connect) await lifecycle.connect(context);
     if (lifecycle.pre) await lifecycle.pre(context);
@@ -91,6 +94,16 @@ function CTL(opts = {}) {
   init();
 }
 
+CTL.connect = (handler) => {
+  if (typeof handler === 'function') {
+    connects.push(handler);
+  }
+}
+CTL.model = (name, obj) => {
+  if (typeof obj === 'object') {
+    models[name] = obj;
+  }
+}
 CTL.service = (obj) => {
   if (obj !== undefined) {
     service = obj;
