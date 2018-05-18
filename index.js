@@ -7,38 +7,17 @@ const paths = require('app-module-path');
 const utils = require('./src/utils');
 const migrate = require('./src/migrate');
 
+let service;
+let metainfo;
 const settings = {
   init: false,
+  debug: false,
   root: '',
   src: '/src',
-  library: 'library',
   models: '/models',
-  config: 'config',
   logging: 'logging',
   lifecycle: 'lifecycle',
-  service: 'service',
-  metainfo: 'metainfo',
 };
-
-function library(name, optional) {
-  try {
-    return require(`${settings.library}/${name}`);
-  } catch (e) {
-    if (e.code !== 'MODULE_NOT_FOUND' || e.message.indexOf(`${settings.library}/${name}`) === -1) {
-      throw e;
-    }
-  }
-  if (settings.library !== 'ctl') {
-    try {
-      return require(`ctl/${name}`);
-    } catch (e) {
-      if (e.code !== 'MODULE_NOT_FOUND' || e.message.indexOf(`ctl/${name}`) === -1) {
-        throw e;
-      }
-    }
-  }
-  if (!optional) throw new Error(`missing_library_${name}`);
-}
 
 async function loader() {
   const folders = (Array.isArray(settings.models) ? settings.models : [settings.models]);
@@ -66,22 +45,22 @@ async function loader() {
 }
 
 async function init() {
-  const log = library(settings.logging)('ctl');
+  const log = require(`library/${settings.logging}`)('ctl');
   try {
-    const lifecycle = library(settings.lifecycle, true) || {};
-    const service = library(settings.service);
-    const config = library(settings.config);
-    const debug = (config.env === 'local');
+    if (!service) throw new Error('Service is not defined, please install ctl-express or some other service.');
+    const lifecycle = require(`library/${settings.lifecycle}`, true) || {};
+    const debug = !!settings.debug;
     const models = await loader();
-
     const context = service.create();
     if (lifecycle.loadModels) {
       merge(models, await lifecycle.loadModels(context) || {});
     }
     if (lifecycle.connect) await lifecycle.connect(context);
     if (lifecycle.pre) await lifecycle.pre(context);
-    const metainfo = library(settings.metainfo, true);
-    await migrate(log, metainfo, models, !debug);
+    if (metainfo) {
+      const handler = await metainfo();
+      if (handler) await migrate(log, handler, models, !debug);
+    }
     if (lifecycle.setup) await lifecycle.setup(context);
     await service.run(context);
     if (lifecycle.post) lifecycle.post(context);
@@ -104,11 +83,28 @@ function CTL(opts = {}) {
   merge(settings, opts, { init: true });
   paths.addPath(`${__dirname}/src`);
   paths.addPath(settings.src);
+  if (module.parent) {
+    const pkg = require(`${opts.root}/package.json`);
+    Object.keys(pkg.dependencies)
+      .filter(lib => lib.startsWith('ctl-'))
+      .forEach(lib => module.parent.require(lib));
+  }
   init();
 }
 
+CTL.service = (obj) => {
+  if (obj !== undefined) {
+    service = obj;
+  }
+  return service;
+};
+CTL.metainfo = (obj) => {
+  if (obj !== undefined)  {
+    metainfo = obj;
+  }
+  return metainfo;
+};
 CTL.dirname = dirname;
-CTL.library = library;
 CTL.settings = (defaults = {}) => merge(defaults, settings);
 
 module.exports = CTL;
