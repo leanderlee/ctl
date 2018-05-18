@@ -13,7 +13,7 @@ const connects = [];
 const models = {};
 const settings = {
   init: false,
-  debug: false,
+  noTests: false,
   root: '',
   src: '/src',
   models: '/models',
@@ -49,7 +49,6 @@ async function init() {
   try {
     if (!service) throw new Error('Service is not defined, please install ctl-express or some other service.');
     const lifecycle = require(`library/${settings.lifecycle}`, true) || {};
-    const debug = !!settings.debug;
     await loadModelsDir();
     const context = service.create();
     if (lifecycle.loadModels) {
@@ -62,7 +61,7 @@ async function init() {
     if (lifecycle.pre) await lifecycle.pre(context);
     if (metainfo) {
       const handler = await metainfo();
-      if (handler) await migrate(log, handler, models, !debug);
+      if (handler) await migrate(log, handler, models, !!settings.noTests);
     }
     if (lifecycle.setup) await lifecycle.setup(context);
     await service.run(context);
