@@ -14,7 +14,7 @@ module.exports = async function (log, metainfo, models, disableTests) {
 
   async function setup(name, model) {
     const { setup, version = 0, changes = [] } = model;
-    await setup();
+    if (setup) await setup();
     return update(name, version + changes.length);
   }
 
