@@ -20,7 +20,7 @@ module.exports = async function (log, metainfo, models, disableTests) {
 
   async function test(name, model) {
     if (!model.testing) return false;
-    const { version = 0, perform, reset } = model.testing;
+    const { version = -1, perform, reset } = model.testing;
     if (reset) return update(name, -1);
     if (isNaN(version)) return false;
     if (perform) await perform();
