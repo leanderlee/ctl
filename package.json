@@ -4,7 +4,7 @@
   "homepage": "http://github.com/leanderlee/ctl",
   "main": "host",
   "name": "ctl",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "dependencies": {
     "app-module-path": "^2.2.0",
     "better-logs": "^3.0.3",
