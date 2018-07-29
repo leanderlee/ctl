@@ -51,7 +51,9 @@ async function init() {
   try {
     if (!service) throw new Error('Service is not defined, please install ctl-express or some other service.');
     const lifecycle = require(`library/${settings.lifecycle}`, true) || {};
+    if (lifecycle.preLoad) await lifecycle.preLoad();
     await loadModelsDir();
+    if (lifecycle.postLoad) await lifecycle.postLoad();
     const context = service.create();
     if (lifecycle.loadModels) {
       merge(models, await lifecycle.loadModels(context) || {});
@@ -118,6 +120,7 @@ CTL.metainfo = (obj) => {
 };
 CTL.dirname = dirname;
 CTL.library = (name) => require(`library/${name}`);
+CTL.options = (override = {}) => merge(settings, override);
 CTL.settings = (defaults = {}) => merge(defaults, settings);
 
 module.exports = CTL;
