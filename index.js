@@ -7,6 +7,8 @@ const paths = require('app-module-path');
 const utils = require('./src/utils');
 const migrate = require('./src/migrate');
 
+paths.addPath(`${__dirname}/src`);
+
 let service;
 let metainfo;
 const connects = [];
@@ -83,7 +85,6 @@ function CTL(opts = {}) {
   opts.root = dirname();
   opts.src = `${opts.root}${src}`;
   merge(settings, opts, { init: true });
-  paths.addPath(`${__dirname}/src`);
   paths.addPath(settings.src);
   if (!module.parent) throw new Error('ctl must be used as a library.');
   const pkg = require(`${opts.root}/package.json`);
