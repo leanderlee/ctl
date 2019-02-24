@@ -9,7 +9,7 @@ async function load(ctl, f) {
     settings = require(f);
   } catch (e) {}
   if (typeof settings === 'function') {
-    config.set(await settings(ctl));
+    config.set(await settings(config));
     ctl.stage(config.stage);
     log.info(`Config "${path.relative(process.cwd(), f)}" executed.`);
   } else if (settings) {
