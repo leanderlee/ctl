@@ -17,3 +17,6 @@ exports.addSlash = function (dir, def) {
   return preSlash(defaultValue(dir, def));
 };
 
+exports.isString = function (a) {
+  return (a !== null) && (a !== undefined) && a.isString();
+}

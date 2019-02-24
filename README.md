@@ -7,7 +7,6 @@ ctl is the easiest way to manage everything with a project. specifically, it off
 - routes and handlers
 - html pages, styles and views
 - static assets
-- serverless hooks
 
 
 ## Installation ##
