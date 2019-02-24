@@ -1,14 +1,11 @@
 const mods = require('app-module-path');
-const logs = require('better-logs');
 const path = require('path');
-const callsite = require('callsite');
 const merge = require('lodash.merge');
 const fs = require('fs-extra');
-const utils = require('./utils');
-const express = require('./express');
+
+const express = require('./services/express');
 
 const DEFAULTS = {
-  server: { port: 8080 },
   plugins: {
     log: require('./plugins/log'),
     config: require('./plugins/config'),
@@ -22,12 +19,6 @@ const DEFAULTS = {
   static: '/static',
   staticUrl: '/static',
 };
-
-function dirname() {
-  const stack = callsite();
-  const requester = stack[3].getFileName();
-  return path.dirname(requester);
-}
 
 module.exports = class Service {
   async init(opts = {}) {
@@ -76,10 +67,11 @@ module.exports = class Service {
     }
   }
   async startServer() {
+    const config = this.config();
     this.server = await this.options.service.run({
       app: this.app,
-      port: this.options.server.port,
-      host: this.options.server.host,
+      port: config.server.port,
+      host: config.server.host,
       log: this.log('server'),
     });
   }
@@ -101,11 +93,7 @@ module.exports = class Service {
     }
   }
   setupServer() {
-    this.app = this.options.service.create({
-      staticUrl: this.options.staticUrl,
-      dirs: this.dirs,
-      log: this.log('server'),
-    });
+    this.app = this.options.service.create(this);
   }
   async setupRoutes() {
     let contents = [];
@@ -130,7 +118,7 @@ module.exports = class Service {
       const name = plugins[i];
       const plugin = this.options.plugins[name];
       if (this[name]) throw new Error(`plugin_${name}_already_declared`);
-      this[name] = await plugin(this.options[name], this);
+      this[name] = await plugin(this);
     }
   }
 }

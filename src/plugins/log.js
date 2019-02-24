@@ -1,4 +1,4 @@
 
-module.exports = async (opts) => {
-  return opts || require('better-logs');
+module.exports = async (ctl) => {
+  return ctl.options.logger || require('better-logs');
 }

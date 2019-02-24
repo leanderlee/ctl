@@ -4,24 +4,21 @@ const nunjucks = require('nunjucks');
 const compress = require('compression');
 const body = require('body-parser');
 
-function create({ staticUrl, dirs, host, views, debug, log } = {}) {
-  const locals = { host, staticUrl };
+function create(ctl) {
+  const log = ctl.log('server');
+  const config = ctl.config();
   const app = express();
   app.set('x-powered-by', false);
-  if (staticUrl.startsWith('/')) {
-    app.use(staticUrl, express.static(dirs.static));
+  if (config.server.static.startsWith('/')) {
+    app.use(config.server.static, express.static(ctl.dirs.static));
   }
   app.use(compress());
   app.use(body.json({ limit: '25mb' }));
   app.use(log.morgan());
   app.set('view engine', 'html');
-  const env = nunjucks.configure(dirs.views, {
+  const env = nunjucks.configure(ctl.dirs.views, {
     express: app,
-    noCache: !!debug,
-  });
-  app.use((req, res, next) => {
-    res.locals = locals;
-    next();
+    noCache: (config.env !== 'production'),
   });
 
   app.views = {
@@ -30,6 +27,11 @@ function create({ staticUrl, dirs, host, views, debug, log } = {}) {
       return env.render(view, vars);
     },
   };
+  app.use((req, res, next) => {
+    res.locals.staticUrl = config.server.staticUrl;
+    res.locals.baseUrl = config.server.baseUrl;
+    next();
+  });
   return app;
 }
 

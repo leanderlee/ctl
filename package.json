@@ -10,7 +10,6 @@
     "better-config": "^1.2.3",
     "better-logs": "^3.0.4",
     "body-parser": "^1.18.3",
-    "callsite": "^1.0.0",
     "compression": "^1.7.3",
     "express": "^4.16.4",
     "fs-extra": "^7.0.1",
