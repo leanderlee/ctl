@@ -7,6 +7,7 @@ const express = require('./services/express');
 
 const DEFAULTS = {
   plugins: {
+    stage: require('./plugins/stage'),
     log: require('./plugins/log'),
     config: require('./plugins/config'),
   },

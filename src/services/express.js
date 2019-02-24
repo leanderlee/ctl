@@ -18,7 +18,7 @@ function create(ctl) {
   app.set('view engine', 'html');
   const env = nunjucks.configure(ctl.dirs.views, {
     express: app,
-    noCache: (config.env !== 'production'),
+    noCache: (ctl.stage !== 'production'),
   });
 
   app.views = {

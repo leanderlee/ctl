@@ -10,18 +10,18 @@ async function load(ctl, f) {
   } catch (e) {}
   if (typeof settings === 'function') {
     config.set(await settings(ctl));
+    ctl.stage(config.stage);
     log.info(`Config "${path.relative(process.cwd(), f)}" executed.`);
   } else if (settings) {
     config.set(settings);
+    ctl.stage(config.stage);
     log.info(`Config "${path.relative(process.cwd(), f)}" loaded.`);
   }
 }
 
 module.exports = async (ctl) => {
-  const { ENV = 'local', CONFIG = '', PORT = 8080 } = process.env;
-  const env = ENV.toLowerCase();
+  const { CONFIG = '', PORT = 8080 } = process.env;
   const log = ctl.log('config');
-  ctl.env = env;
   let overrides;
   try {
     overrides = JSON.parse(CONFIG);
@@ -29,7 +29,7 @@ module.exports = async (ctl) => {
     if (CONFIG) throw e;
   }
   config.set({
-    env,
+    stage: ctl.stage(),
     server: {
       port: PORT,
       static: '/static',
@@ -40,18 +40,19 @@ module.exports = async (ctl) => {
   await load(ctl, `${ctl.dirs.src}/library/defaults`);
   await load(ctl, `${ctl.dirs.root}/defaults.json`);
   await load(ctl, `${ctl.dirs.root}/defaults.js`);
-  await load(ctl, `${ctl.dirs.src}/library/defaults-${env}`);
-  await load(ctl, `${ctl.dirs.root}/defaults-${env}.json`);
-  await load(ctl, `${ctl.dirs.root}/defaults-${env}.js`);
+  await load(ctl, `${ctl.dirs.src}/library/defaults-${ctl.stage()}`);
+  await load(ctl, `${ctl.dirs.root}/defaults-${ctl.stage()}.json`);
+  await load(ctl, `${ctl.dirs.root}/defaults-${ctl.stage()}.js`);
   await load(ctl, `${ctl.dirs.src}/library/config`);
   await load(ctl, `${ctl.dirs.root}/config.json`);
   await load(ctl, `${ctl.dirs.root}/config.js`);
-  await load(ctl, `${ctl.dirs.src}/library/config-${env}`);
-  await load(ctl, `${ctl.dirs.root}/config-${env}.json`);
-  await load(ctl, `${ctl.dirs.root}/config-${env}.js`);
+  await load(ctl, `${ctl.dirs.src}/library/config-${ctl.stage()}`);
+  await load(ctl, `${ctl.dirs.root}/config-${ctl.stage()}.json`);
+  await load(ctl, `${ctl.dirs.root}/config-${ctl.stage()}.js`);
   if (overrides) {
     config.set(overrides);
     log.info('Loaded overrides from environment variables.');
   }
+  log.info(`Loaded config for "${ctl.stage()}".`);
   return () => config;
 }
