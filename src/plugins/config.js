@@ -20,7 +20,7 @@ async function load(ctl, f) {
 }
 
 module.exports = async (ctl) => {
-  const { CONFIG = '', PORT = 8080 } = process.env;
+  const { CONFIG = '', PORT = 8080, SCRIPT = '' } = process.env;
   const log = ctl.log('config');
   let overrides;
   try {
@@ -30,6 +30,7 @@ module.exports = async (ctl) => {
   }
   config.set({
     stage: ctl.stage(),
+    script: SCRIPT,
     server: {
       port: PORT,
       static: '/static',
@@ -37,6 +38,8 @@ module.exports = async (ctl) => {
       baseUrl: 'http://localhost:8080',
     },
   });
+  config.set(ctl.options.defaults, true);
+  config.set(ctl.options.config, true);
   await load(ctl, `${ctl.dirs.src}/library/defaults`);
   await load(ctl, `${ctl.dirs.root}/defaults.json`);
   await load(ctl, `${ctl.dirs.root}/defaults.js`);

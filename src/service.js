@@ -12,6 +12,7 @@ const DEFAULTS = {
     config: require('./plugins/config'),
   },
   service: express,
+  script: '',
   src: '/src',
   controllers: '/controllers',
   lifecycle: '/lifecycle',
@@ -29,12 +30,34 @@ module.exports = class Service {
     await this.setupPlugins();
     await this.runLifecycleEvent('before');
     await this.loadModels();
+    await this.run();
+    return this;
+  }
+  async run() {
+    const config = this.config();
+    if (config.script) {
+      await this.runScript(config.script);
+      if (config.scriptOnly) {
+        process.exit(0);
+      }
+    }
+    await this.runServer();
+  }
+  async runServer() {
     this.setupServer();
     await this.runLifecycleEvent('startup');
     await this.setupRoutes();
     await this.startServer();
-    await this.runLifecycleEvent('after');
-    return this;
+    await this.runLifecycleEvent('after'); 
+  }
+  async runScript(file) {
+    const log = this.log('script');
+    const script = path.resolve(`${this.dirs.root}/${file}`);
+    const relative = path.relative(process.cwd(), script);
+    log.info(`Running "${relative}" script...`);
+    const fn = require(script);
+    await fn();
+    log.info(`Finished running "${relative}".`);
   }
   setOptions(opts) {
     this.options = merge(DEFAULTS, opts);
@@ -114,6 +137,7 @@ module.exports = class Service {
     }
   }
   async setupPlugins() {
+    const log = require('better-logs')('plugins');
     const plugins = Object.keys(this.options.plugins);
     for (let i = 0; i < plugins.length; i += 1) {
       const name = plugins[i];
