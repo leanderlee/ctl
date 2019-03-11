@@ -39,7 +39,8 @@ async function run({ app, port, host, log }) {
   const server = http.createServer(app);
   await server.listen(port, host);
   const realHost = server.address().address;
-  log.info('Server started listening at http://%s:%s', realHost, port);
+  const realPort = server.address().port;
+  log.info('Server started listening at http://%s:%s', realHost, realPort);
 }
 
 module.exports = {
