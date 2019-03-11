@@ -11,6 +11,7 @@ const DEFAULTS = {
     log: require('./plugins/log'),
     config: require('./plugins/config'),
   },
+  autoStart: true,
   service: express,
   script: '',
   src: '/src',
@@ -47,8 +48,9 @@ module.exports = class Service {
     this.setupServer();
     await this.runLifecycleEvent('startup');
     await this.setupRoutes();
-    await this.startServer();
-    await this.runLifecycleEvent('after'); 
+    if (this.options.autoStart) {
+      await this.startServer();
+    }
   }
   async runScript(file) {
     const log = this.log('script');
@@ -98,6 +100,7 @@ module.exports = class Service {
       host: config.server.host,
       log: this.log('server'),
     });
+    await this.runLifecycleEvent('after');
   }
   async loadModels() {
     let contents = [];
