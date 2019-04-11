@@ -37,10 +37,12 @@ function create(ctl) {
 
 async function run({ app, port, host, log }) {
   const server = http.createServer(app);
+  server.on('listening', () => {
+    const realHost = server.address().address;
+    const realPort = server.address().port;
+    log.info('Server started listening at http://%s:%s', realHost, realPort);
+  });
   await server.listen(port, host);
-  const realHost = server.address().address;
-  const realPort = server.address().port;
-  log.info('Server started listening at http://%s:%s', realHost, realPort);
 }
 
 module.exports = {
