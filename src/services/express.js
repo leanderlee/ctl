@@ -40,6 +40,7 @@ async function run({ app, port, host, log }) {
   server.on('listening', () => {
     const realHost = server.address().address;
     const realPort = server.address().port;
+    process.send('ready');
     log.info('Server started listening at http://%s:%s', realHost, realPort);
   });
   await server.listen(port, host);
