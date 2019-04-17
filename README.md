@@ -20,7 +20,7 @@ yarn add ctl
 
 In `index.js`:
 ```js
-require('ctl').init()
+require('ctl').init(opts) // options optional, see below for full doc 
 ```
 
 In `config.js`:
@@ -51,11 +51,11 @@ const config = ctl.config();
 const log = ctl.log('section');
 ```
 
-#### Stage
+### Stage
 
 Most servers need an environment flag, like `local`, `staging` or `prod`. You can do this easily by setting the `STAGE` environment variable, and running the server like `STAGE=local node index.js`. This will then be read into ctl.stage().
 
-#### Config
+### Config
 
 Config also works out of the box, and ctl will look from a variety of places and merge the configs. Here are all the places it will look:
 
@@ -76,7 +76,7 @@ Note: ROOT is the home directory, and SRC is the src directory (defaults to /src
 
 As you can see, it will load the right config in based on the STAGE you set.
 
-#### Logging
+### Logging
 
 Please refer to the documentation for [better-logs](https://github.com/diamondio/better-logs)
 

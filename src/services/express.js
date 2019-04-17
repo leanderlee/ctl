@@ -8,15 +8,16 @@ function create(ctl) {
   const config = ctl.config();
   const log = ctl.log('server');
   const app = express();
+  const opts = config.server || {};
   app.set('x-powered-by', false);
-  if (config.server.static) {
-    app.use(config.server.static, express.static(config.server.staticDir));
+  if (opts.static) {
+    app.use(opts.static, express.static(opts.staticDir));
   }
   app.use(compress());
   app.use(body.json({ limit: '25mb' }));
   app.use(log.morgan());
   app.set('view engine', 'html');
-  const env = nunjucks.configure(config.server.viewsDir, {
+  const env = nunjucks.configure(opts.viewsDir, {
     express: app,
     noCache: (ctl.stage() !== 'production'),
   });
@@ -28,8 +29,8 @@ function create(ctl) {
     },
   };
   app.use((req, res, next) => {
-    res.locals.staticUrl = config.server.staticUrl;
-    res.locals.baseUrl = config.server.baseUrl;
+    res.locals.staticUrl = opts.staticUrl;
+    res.locals.baseUrl = opts.baseUrl;
     next();
   });
   return app;
