@@ -16,6 +16,33 @@
 yarn add ctl
 ```
 
+## Usage
+
+In `index.js`:
+```js
+require('ctl').init()
+```
+
+In `config.js`:
+```js
+module.exports = async () => {
+  return {
+    message: 'hello world',
+  }
+};
+```
+
+In `src/lifecycle/startup.js`:
+```js
+const ctl = require('ctl');
+const config = ctl.config();
+const log = ctl.log('startup');
+module.exports = async (app) => {
+  // app.get() ... setup routes
+  log.debug('Loaded config:', config.message); // => Loaded config: hello world
+};
+```
+
 ## Stage, Config and Logging
 
 ```js
