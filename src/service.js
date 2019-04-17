@@ -13,7 +13,6 @@ const CORE_PLUGINS = {
 const DEFAULTS = {
   autoStart: true,
   service: express,
-  script: '',
   src: '/src',
   lifecycle: '/lifecycle',
 };
