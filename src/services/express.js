@@ -10,7 +10,7 @@ function create(ctl) {
   const app = express();
   const opts = config.server || {};
   app.set('x-powered-by', false);
-  if (opts.static) {
+  if (opts.staticDir && opts.static !== false) {
     app.use(opts.static, express.static(opts.staticDir));
   }
   app.use(compress());

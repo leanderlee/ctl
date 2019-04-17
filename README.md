@@ -18,7 +18,12 @@ yarn add ctl
 
 ## Usage
 
-In `index.js`:
+You can run a server simply with
+```bash
+PORT=8001 node -e 'require("ctl").init()'
+```
+
+Or for more complex settings, `index.js`:
 ```js
 require('ctl').init(opts) // options optional, see below for full doc 
 ```
