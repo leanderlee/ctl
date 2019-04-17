@@ -38,7 +38,7 @@ function create(ctl) {
 async function start(app, ctl) {
   const config = ctl.config();
   const log = ctl.log('server');
-  const { port, host } = config.server;
+  const { port = 8080, host } = config.server || {};
   const server = http.createServer(app);
   server.on('listening', () => {
     const addr = server.address();
