@@ -62,9 +62,9 @@ module.exports = class Service {
     if (!lc) throw new Error('missing_lifecycle');
     if (typeof lc === 'object') {
       const log = this.log('lifecycle');
-      if (lc.before) log.warn('Missing lifecycle [before] (not in object).');
-      if (lc.startup) log.warn('Missing lifecycle [startup] (not in object).');
-      if (lc.after) log.warn('Missing lifecycle [after] (not in object).');
+      if (!lc.before) log.warn('Missing lifecycle [before] (not in object).');
+      if (!lc.startup) log.warn('Missing lifecycle [startup] (not in object).');
+      if (!lc.after) log.warn('Missing lifecycle [after] (not in object).');
       this.lifecycle = lc;
       return true;
     }
