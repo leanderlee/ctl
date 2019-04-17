@@ -1,7 +1,7 @@
-const mods = require('app-module-path');
+const fs = require('fs');
 const path = require('path');
+const mods = require('app-module-path');
 const merge = require('lodash.merge');
-const fs = require('fs-extra');
 
 const express = require('./services/express');
 
@@ -82,7 +82,7 @@ module.exports = class Service {
     const log = this.log('lifecycle');
     const file = path.resolve(`${dir}/${evt}.js`);
     const exists = fs.existsSync(file);
-    if (!exists) return log.warn('Missing lifecycle event:', evt, file);
+    if (!exists) return log.warn('Missing lifecycle [%s] (looked in %s).', evt, path.relative(this.dirs.root, dir));
     return require(file);
   }
   async loadPlugins(pluginMap) {

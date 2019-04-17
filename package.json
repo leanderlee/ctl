@@ -12,7 +12,6 @@
     "body-parser": "^1.18.3",
     "compression": "^1.7.3",
     "express": "^4.16.4",
-    "fs-extra": "^7.0.1",
     "lodash.merge": "^4.6.1",
     "nunjucks": "^3.1.7"
   }
