@@ -11,7 +11,7 @@ function create(ctl) {
   const opts = config.server || {};
   app.set('x-powered-by', false);
   if (opts.staticDir && opts.static !== false) {
-    app.use(opts.static, express.static(opts.staticDir));
+    app.use(opts.static, express.static(opts.staticDir, opts.staticOpts || {}));
   }
   app.use(compress());
   app.use(body.json({ limit: '25mb' }));
